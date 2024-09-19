@@ -18,7 +18,7 @@ describe("Swap", function () {
     const amountToSwap = hre.ethers.parseUnits("100", 18);
     const amountToReturn = hre.ethers.parseUnits("20", 18);
 
-    // Mint tokens to owner
+   
     await tokenToSwap.mint(owner.address, amountToSwap);
     await tokenToReturn.mint(otherAccount.address, amountToReturn);
 
@@ -58,19 +58,19 @@ describe("Swap", function () {
     it("Should complete the order and transfer tokens", async function () {
       const { swap, tokenToSwap, tokenToReturn, owner, otherAccount, amountToSwap, amountToReturn } = await loadFixture(deploySwapFixture);
 
-      // Owner creates an order
+      
       await tokenToSwap.approve(swap.address, amountToSwap);
       await swap.createOrder(tokenToSwap.address, amountToSwap, tokenToReturn.address, amountToReturn);
 
-      // Other account approves swap contract for tokenToReturn
+      
       await tokenToReturn.connect(otherAccount).approve(swap.address, amountToReturn);
 
-      // Other account completes the order
+      
       await expect(swap.connect(otherAccount).completeOrder(0))
         .to.emit(swap, "orderCompleted")
         .withArgs(0, otherAccount.address);
 
-      // Verify balances
+     
       expect(await tokenToReturn.balanceOf(owner.address)).to.equal(amountToReturn);
       expect(await tokenToSwap.balanceOf(otherAccount.address)).to.equal(amountToSwap);
     });
