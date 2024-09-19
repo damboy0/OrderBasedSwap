@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.27;
 interface IERC20 {
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
     function transfer(address recipient, uint256 amount) external returns (bool);
@@ -9,8 +9,7 @@ interface IERC20 {
 
 contract Swap {
 
-    // IERC20 public token;
-    // IERC20 public secondToken;
+    error AmountCannotBeZero();
 
     // order: 
 //address of depositor, token the depositor needs to swap, amout of the token, address of the token depositor wants in return, amount of token they want in return
@@ -34,8 +33,8 @@ contract Swap {
 
 
     function createOrder(address _tokenToSwap, uint256 _amountOfTokenRequested, address _tokenToReturn, uint256 _amountTokenToReturn) external {
-        require(_amountOfTokenRequested > 0,"amount cant be zero");
-        require(_amountTokenToReturn > 0,"amount cant be zero");
+        require(_amountOfTokenRequested > 0,AmountCannotBeZero());
+        require(_amountTokenToReturn > 0,AmountCannotBeZero());
 
         IERC20(_tokenToSwap).transferFrom(msg.sender,address(this),_amountOfTokenRequested);
 
@@ -51,8 +50,6 @@ contract Swap {
 
         emit OrderCreated(noOfOrders,msg.sender,_tokenToSwap,_amountOfTokenRequested,_tokenToReturn,_amountTokenToReturn);
         noOfOrders++;
-
-
     }
 
 
