@@ -9,8 +9,9 @@ describe("Swap", function () {
     const tokenA = await hre.ethers.getContractFactory("MockERC20");
     const tokenB = await hre.ethers.getContractFactory("MockERC20");
 
-    const tokenToSwap = await tokenA.deploy("TokenA", "TKA", 1000000);
-    const tokenToReturn = await tokenB.deploy("TokenB", "TKB", 1000000);
+    const tokenToSwap = await tokenA.deploy("TokenA", "TKA", 18, 1000000);
+    const tokenToReturn = await tokenB.deploy("TokenB", "TKB", 18, 1000000);
+
 
     const Swap = await hre.ethers.getContractFactory("Swap");
     const swap = await Swap.deploy();
