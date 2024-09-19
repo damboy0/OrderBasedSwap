@@ -67,6 +67,15 @@ contract Swap {
         emit orderCompleted(id,msg.sender);
     }
 
+   function getAllOrders() external view returns (Order[] memory) {
+        Order[] memory allOrders = new Order[](noOfOrders);
+
+        for (uint256 i = 0; i < noOfOrders; i++) {
+            allOrders[i] = orders[i];
+        }
+
+        return allOrders;
+    }
     
 
 
