@@ -10,6 +10,7 @@ interface IERC20 {
 contract Swap {
 
     error AmountCannotBeZero();
+    error OrderAlreadyCompleted();
 
     // order: 
 //address of depositor, token the depositor needs to swap, amout of the token, address of the token depositor wants in return, amount of token they want in return
@@ -29,6 +30,7 @@ contract Swap {
 
 
     event OrderCreated(uint id, address depositor, address _tokenToSwap, uint256 _amountOfTokenRequested, address _tokenToReturn, uint256 _amountTokenToReturn);
+    event orderCompleted(uint256 id,address buyer);
 
 
 
@@ -51,6 +53,21 @@ contract Swap {
         emit OrderCreated(noOfOrders,msg.sender,_tokenToSwap,_amountOfTokenRequested,_tokenToReturn,_amountTokenToReturn);
         noOfOrders++;
     }
+
+    function completeOrder(uint256 id) external {
+        Order storage order = orders[id];
+        require(!order.isCompleted,OrderAlreadyCompleted());
+
+        IERC20.transferFrom(msg.sender,order.depositor,order.amountOfTokenRequested);
+
+        IERC20(order.tokenToSwap).transfer(msg.sender,order.amountOfTokenRequested);
+
+        order.isCompleted = true;
+
+        emit orderCompleted(id,msg.sender);
+    }
+
+    
 
 
 
