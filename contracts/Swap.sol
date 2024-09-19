@@ -58,9 +58,14 @@ contract Swap {
         Order storage order = orders[id];
         require(!order.isCompleted,OrderAlreadyCompleted());
 
-        IERC20.transferFrom(msg.sender,order.depositor,order.amountOfTokenRequested);
+        IERC20 tokenToReturn = IERC20(order.tokenToReturn);
+        IERC20 tokenToSwap = IERC20(order.tokenToSwap);         
 
-        IERC20(order.tokenToSwap).transfer(msg.sender,order.amountOfTokenRequested);
+        require(tokenToReturn.transferFrom(msg.sender, order.depositor, order.amountTokenToReturn), "Transfer failed");
+
+    
+       require(tokenToSwap.transfer(msg.sender, order.amountOfTokenRequested), "Transfer failed");
+
 
         order.isCompleted = true;
 
